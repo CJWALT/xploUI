@@ -38,7 +38,9 @@ const List = () =>{
             isNew:false,
             oldPrice: 19, 
             price:12
-        }
+        },
+        
+        
     ]
     return (
         <div className='list'> {

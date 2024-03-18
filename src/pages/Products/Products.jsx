@@ -1,6 +1,7 @@
 import React, { useState } from 'react' 
 import List from '../../components/List/List'
 import { useParams } from 'react-router-dom'
+import './Products.scss'
 
 
 const Products = () =>{
@@ -8,6 +9,7 @@ const Products = () =>{
     const catId = parseInt(useParams().id)
 
     const [maxPrice, setMaxPrice] = useState(1000)
+    const [sort, setSort] = useState(null)
 
 
     return (
@@ -39,19 +41,19 @@ const Products = () =>{
                 <div className="filterItem">
                     <h2>Sort by</h2>
                     <div className="inputItem">
-                        <input type="radio" name="price" id="asc" value="asc"  />
+                        <input type="radio" name="price" id="asc" value="asc" onChange={(e=>setSort("asc"))}  />
                         <label htmlFor="asc">Price (Lowest first) </label>
                     </div>
                     <div className="inputItem">
-                        <input type="radio" name="price" id="desc" value="asc"  />
+                        <input type="radio" name="price" id="desc" value="asc" onChange={(e=>setSort("desc"))}  />
                         <label htmlFor="desc">Price (Highest first) </label>
                     </div>
                 </div>
             </div>
 
             <div className="right">
-                <img src='https://images.pexels.com/photos/1549200/pexels-photo-1549200.jpeg?auto=compress&cs=tinysrgb&w=1600' className='catImg'/>
-                <List />
+                <img src='https://images.pexels.com/photos/1549200/pexels-photo-1549200.jpeg?auto=compress&cs=tinysrgb&w=1600' className='catImg' alt=''/>
+                <List catId={catId} maxPrice={maxPrice} sort={sort} />
             </div>
         </div>
     )
