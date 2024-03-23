@@ -2,14 +2,26 @@ import React, { useState } from 'react'
 import List from '../../components/List/List'
 import { useParams } from 'react-router-dom'
 import './Products.scss'
+import useFetch from '../../hooks/useFetch'
 
 
 const Products = () =>{
 
     const catId = parseInt(useParams().id)
 
+
     const [maxPrice, setMaxPrice] = useState(1000)
-    const [sort, setSort] = useState(null)
+    const [sort, setSort] = useState('asc')
+    const [selectedSubCats, setSelectedSubCats] = useState([])
+
+    const {data, loading, error} = useFetch(`/sub-categories?[filters][categories][id][$eq]=${catId}`)
+
+    const handleChange = (e) =>{
+        const value = e.target.value; 
+        const isChecked = e.target.checked 
+        setSelectedSubCats (isChecked ? [...selectedSubCats, value] : 
+            selectedSubCats.filter((item)=>item !== value))
+    }
 
 
     return (
@@ -17,18 +29,18 @@ const Products = () =>{
             <div className="left">
                 <div className="filterItem">
                     <h2>Product Categories</h2>
-                    <div className="inputItem">
-                        <input type="checkbox" name="" value={1} id="1" />
-                        <label htmlFor="1">Shoes</label>
-                    </div>
-                    <div className="inputItem">
-                        <input type="checkbox" name="" value={2} id="2" />
-                        <label htmlFor="2">Skirts</label>
-                    </div>
-                    <div className="inputItem">
-                        <input type="checkbox" name="" value={3} id="3" />
-                        <label htmlFor="3">Coats</label>
-                    </div>
+                    {error ? <div> Something went wrong</div> 
+                        : 
+                        (loading ? <div>loading </div> 
+                    : 
+                        data?.map((item) => ( 
+                            <div className="inputItem" key={item.id}>
+                                <input type="checkbox" name="" value={item.id} id={item.id} onChange={handleChange} />
+                                <label htmlFor={item.id}>{item.attributes.title}</label>
+                            </div>
+                        )))}
+                    
+                    
                 </div>
                 <div className="filterItem">
                     <h2>Filter by price</h2>
@@ -53,7 +65,7 @@ const Products = () =>{
 
             <div className="right">
                 <img src='https://images.pexels.com/photos/1549200/pexels-photo-1549200.jpeg?auto=compress&cs=tinysrgb&w=1600' className='catImg' alt=''/>
-                <List catId={catId} maxPrice={maxPrice} sort={sort} />
+                <List catId={catId} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
             </div>
         </div>
     )
